@@ -344,24 +344,80 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 /* --------------------------------------------------------------------------
-   CONTACT & ENROLLMENT FORM SUBMISSION HANDLERS
+   CONTACT & ENROLLMENT FORM SUBMISSION HANDLERS (FORMSPREE INTEGRATION)
    -------------------------------------------------------------------------- */
-function handleFormSubmit(event) {
-  event.preventDefault();
-  const name = document.getElementById('contactName').value;
-  const course = document.getElementById('contactCourse').value;
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xdekgkep';
 
-  showToast(`Thank you, ${name}! Your inquiry for "${course}" has been sent successfully. We will call you shortly.`);
-  document.getElementById('contactForm').reset();
+async function handleFormSubmit(event) {
+  event.preventDefault();
+  const form = event.target;
+  const submitBtn = document.getElementById('contactSubmitBtn');
+  const originalBtnText = submitBtn.innerHTML;
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+  try {
+    const formData = new FormData(form);
+    const response = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      showToast('Thank you! Your course inquiry has been sent to WE GROW Academy.');
+      form.reset();
+    } else {
+      const data = await response.json();
+      if (data && data.errors) {
+        showToast('Error: ' + data.errors.map(err => err.message).join(', '));
+      } else {
+        showToast('Oops! There was a problem submitting your inquiry.');
+      }
+    }
+  } catch (error) {
+    showToast('Network error! Please check your connection or call +91 7708282147.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnText;
+  }
 }
 
-function handleModalEnrollSubmit(event) {
+async function handleModalEnrollSubmit(event) {
   event.preventDefault();
-  const name = document.getElementById('modalName').value;
-  const course = document.getElementById('modalSelectedCourse').value;
+  const form = event.target;
+  const submitBtn = document.getElementById('modalSubmitBtn');
+  const originalBtnText = submitBtn.innerHTML;
 
-  closeModal('enrollModal');
-  showToast(`Seat Reservation Request Received for ${name} (${course})! Our team in Thiruvanmiyur will contact you.`);
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Reserving Seat...';
+
+  try {
+    const formData = new FormData(form);
+    const response = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      closeModal('enrollModal');
+      showToast('Seat Reservation Application Submitted Successfully!');
+      form.reset();
+    } else {
+      showToast('Oops! Problem submitting seat reservation.');
+    }
+  } catch (error) {
+    showToast('Network error! Please check your connection or call +91 7708282147.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnText;
+  }
 }
 
 /* --------------------------------------------------------------------------

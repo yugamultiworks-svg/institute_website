@@ -508,20 +508,20 @@
             Course Inquiry & Registration
           </h3>
           
-          <form id="contactForm" onsubmit="handleFormSubmit(event)">
+          <form id="contactForm" action="https://formspree.io/f/xdekgkep" method="POST" onsubmit="handleFormSubmit(event)">
             <div class="form-group">
               <label class="form-label">Full Name *</label>
-              <input type="text" id="contactName" class="form-input" placeholder="e.g. Rahul Sharma" required>
+              <input type="text" id="contactName" name="name" class="form-input" placeholder="e.g. Rahul Sharma" required>
             </div>
 
             <div class="form-group">
               <label class="form-label">Phone / WhatsApp Number *</label>
-              <input type="tel" id="contactPhone" class="form-input" placeholder="e.g. +91 9876543210" required>
+              <input type="tel" id="contactPhone" name="phone" class="form-input" placeholder="e.g. +91 9876543210" required>
             </div>
 
             <div class="form-group">
               <label class="form-label">Interested Domain / Course *</label>
-              <select id="contactCourse" class="form-select" required>
+              <select id="contactCourse" name="course" class="form-select" required>
                 <option value="">Select a Course...</option>
                 <option value="Electrical Design Master Course">Electrical Design Engineering Master Course</option>
                 <option value="Mechanical Design Master Course">Mechanical Design Engineering Master Course</option>
@@ -534,10 +534,10 @@
 
             <div class="form-group">
               <label class="form-label">Message / Query (Optional)</label>
-              <textarea id="contactMessage" class="form-textarea" placeholder="Ask about batch timings, fees, online/offline mode..."></textarea>
+              <textarea id="contactMessage" name="message" class="form-textarea" placeholder="Ask about batch timings, fees, online/offline mode..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+            <button type="submit" id="contactSubmitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
               <i class="fa-solid fa-paper-plane"></i> Submit Inquiry
             </button>
           </form>
@@ -621,27 +621,27 @@
         Complete the form below to reserve your seat in the upcoming batch.
       </p>
 
-      <form onsubmit="handleModalEnrollSubmit(event)">
+      <form id="enrollModalForm" action="https://formspree.io/f/xdekgkep" method="POST" onsubmit="handleModalEnrollSubmit(event)">
         <div class="form-group">
           <label class="form-label">Full Name *</label>
-          <input type="text" id="modalName" class="form-input" placeholder="Your full name" required>
+          <input type="text" id="modalName" name="name" class="form-input" placeholder="Your full name" required>
         </div>
         <div class="form-group">
           <label class="form-label">Phone Number *</label>
-          <input type="tel" id="modalPhone" class="form-input" placeholder="+91 XXXXX XXXXX" required>
+          <input type="tel" id="modalPhone" name="phone" class="form-input" placeholder="+91 XXXXX XXXXX" required>
         </div>
         <div class="form-group">
           <label class="form-label">Selected Course</label>
-          <input type="text" id="modalSelectedCourse" class="form-input" readonly style="background: rgba(255,255,255,0.05); color: var(--primary); font-weight: 600;">
+          <input type="text" id="modalSelectedCourse" name="course" class="form-input" readonly style="background: rgba(255,255,255,0.05); color: var(--primary); font-weight: 600;">
         </div>
         <div class="form-group">
           <label class="form-label">Preferred Mode</label>
-          <select id="modalMode" class="form-select">
+          <select id="modalMode" name="mode" class="form-select">
             <option value="Classroom Training (Thiruvanmiyur)">Classroom Training (Thiruvanmiyur, Chennai)</option>
             <option value="Live Online Training">Live Online Interactive Batch</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem; margin-top: 1rem;">
+        <button type="submit" id="modalSubmitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem; margin-top: 1rem;">
           <i class="fa-solid fa-check-circle"></i> Confirm Seat Reservation
         </button>
       </form>
