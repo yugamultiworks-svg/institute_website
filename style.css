@@ -816,9 +816,12 @@ button {
 }
 
 .course-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 0.75rem;
+}
+
+.course-actions .btn {
+  width: 100%;
 }
 
 /* Gallery & Showcase Section */

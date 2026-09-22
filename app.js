@@ -180,46 +180,253 @@ function filterCourses(category) {
    -------------------------------------------------------------------------- */
 const syllabusData = {
   'eplan-2d': {
-    title: 'Eplan P8 2026 (2D Electrical Schematics)',
-    subtitle: 'Industrial Schematic Engineering & Auto-Documentation',
-    duration: '1 Month (Online / Offline)',
+    title: 'Eplan p8 2026',
+    subtitle: 'This course is designed to make you an expert in EPLAN P8 for Electrical Design. You will learn Multi-line, Single-line, Macros, Page Macros, Window Macros and real-world application-based design.',
+    duration: '1 Month',
     schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
-    prerequisites: 'Basic Electrical Knowledge',
     modules: [
       {
-        heading: 'Eplan P8 2026 Core Schematic Curriculum',
-        items: ['Multi-line & Single-line Circuit Schematics', 'Automatic Contact Cross-referencing & PLC Schema', 'Cable Overview Reports, Terminal Diagrams & BOM Export']
+        heading: '01. Multi Line Electrical Schematic Design',
+        items: [
+          'Project creation & basic settings',
+          'Multi-line schematic design',
+          'Power distribution diagrams',
+          'Motor control circuits',
+          'Wiring, connections & cross-references',
+          'Reports, BOM & documentation',
+          'Hands-on projects'
+        ]
+      },
+      {
+        heading: '02. Single Line Electrical Design',
+        items: [
+          'Single line diagram creation',
+          'Power system representation',
+          'Circuit breakers, fuses & connections',
+          'Load flow representation',
+          'Busbar & panel design',
+          'Reports & documentation',
+          'Hands-on projects'
+        ]
+      },
+      {
+        heading: '03. Macro Creation',
+        items: [
+          'Introduction to macros',
+          'Create symbol macros',
+          'Create device macros',
+          'Macro properties & assignment',
+          'Manage macros in projects',
+          'Reuse & improve efficiency',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: '04. Page Macro (Template)',
+        items: [
+          'Create page macro / template',
+          'Title block & frame configuration',
+          'Placeholder & attribute handling',
+          'Auto numbering & settings',
+          'Reuse templates in projects',
+          'Time saving techniques',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: '05. Window Macro Creation',
+        items: [
+          'Create window macros',
+          'Define window structure',
+          'Insert symbols, devices & texts',
+          'Attribute mapping in window macros',
+          'Reuse in multiple projects',
+          'Improve productivity & consistency',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: 'Application Based Design',
+        items: [
+          'Single Line Single Drawing for Motor Application',
+          'Single Line Single Drawing for Pump Application',
+          'Any Industrial Application'
+        ]
       }
     ],
-    outcomes: ['ePLAN Electrical Engineer', 'Schematics Design Engineer']
+    outcomes: [
+      'Industry standard software skills',
+      'Practical knowledge with real-world projects',
+      'Time saving techniques using macros & templates',
+      'Better productivity & career growth',
+      'Certificate of Completion'
+    ]
   },
   'eplan-3d': {
-    title: 'Eplan P8 3D 2026 (EPLAN Pro Panel 3D)',
-    subtitle: '3D Control Cabinet Construction & Wire Routing',
-    duration: '1 Month (Online / Offline)',
+    title: 'Eplan p8 3D 2026',
+    subtitle: 'This course is designed to make you an expert in EPLAN P8 for Electrical Design. You will learn Multi-line, Single-line, Macros, Page Macros, Window Macros and real-world application-based design.',
+    duration: '1 Month',
     schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
-    prerequisites: 'Basic Electrical CAD Awareness',
     modules: [
       {
-        heading: 'EPLAN Pro Panel 3D Cabinet Design',
-        items: ['3D Cabinet Placement & Component Mounting', 'Virtual 3D Wire Routing & Length Calculation', 'Collision Checks & Drill Hole Export for NC Machines']
+        heading: '01. Multi Line Electrical Schematic Design',
+        items: [
+          'Project creation & basic settings',
+          'Multi-line schematic design',
+          'Power distribution diagrams',
+          'Motor control circuits',
+          'Wiring, connections & cross-references',
+          'Reports, BOM & documentation',
+          'Hands-on projects'
+        ]
+      },
+      {
+        heading: '02. Single Line Electrical Design',
+        items: [
+          'Single line diagram creation',
+          'Power system representation',
+          'Circuit breakers, fuses & connections',
+          'Load flow representation',
+          'Busbar & panel design',
+          'Reports & documentation',
+          'Hands-on projects'
+        ]
+      },
+      {
+        heading: '03. Macro Creation',
+        items: [
+          'Introduction to macros',
+          'Create symbol macros',
+          'Create device macros',
+          'Macro properties & assignment',
+          'Manage macros in projects',
+          'Reuse & improve efficiency',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: '04. Page Macro (Template)',
+        items: [
+          'Create page macro / template',
+          'Title block & frame configuration',
+          'Placeholder & attribute handling',
+          'Auto numbering & settings',
+          'Reuse templates in projects',
+          'Time saving techniques',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: '05. Window Macro Creation',
+        items: [
+          'Create window macros',
+          'Define window structure',
+          'Insert symbols, devices & texts',
+          'Attribute mapping in window macros',
+          'Reuse in multiple projects',
+          'Improve productivity & consistency',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: 'Application Based Design',
+        items: [
+          'Single Line Single Drawing for Motor Application',
+          'Single Line Single Drawing for Pump Application',
+          'Any Industrial Application'
+        ]
       }
     ],
-    outcomes: ['3D Panel Builder Engineer', 'Cabinet Layout Specialist']
+    outcomes: [
+      'Industry standard software skills',
+      'Practical knowledge with real-world projects',
+      'Time saving techniques using macros & templates',
+      'Better productivity & career growth',
+      'Certificate of Completion'
+    ]
   },
   'autocad-electrical': {
-    title: 'AutoCAD Electrical 2D 2026 Drafting',
-    subtitle: 'Industrial 2D Electrical Schematic & Panel Elevation',
-    duration: '1 Month (Online / Offline)',
+    title: 'Autocad electrical 2D 2026',
+    subtitle: 'This course is designed to make you an expert in EPLAN P8 for Electrical Design. You will learn Multi-line, Single-line, Macros, Page Macros, Window Macros and real-world application-based design.',
+    duration: '1 Month',
     schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
-    prerequisites: 'Basic Computer & Electrical Drafting Awareness',
     modules: [
       {
-        heading: 'AutoCAD Electrical 2D 2026 Toolset',
-        items: ['Project Architecture & Schematic Drawing Setup', 'Wire Numbers & Signal Arrow Tagging', 'PLC Module Schematic Generation & 2D Panel Layout Footprints']
+        heading: '01. Multi Line Electrical Schematic Design',
+        items: [
+          'Project creation & basic settings',
+          'Multi-line schematic design',
+          'Power distribution diagrams',
+          'Motor control circuits',
+          'Wiring, connections & cross-references',
+          'Reports, BOM & documentation',
+          'Hands-on projects'
+        ]
+      },
+      {
+        heading: '02. Single Line Electrical Design',
+        items: [
+          'Single line diagram creation',
+          'Power system representation',
+          'Circuit breakers, fuses & connections',
+          'Load flow representation',
+          'Busbar & panel design',
+          'Reports & documentation',
+          'Hands-on projects'
+        ]
+      },
+      {
+        heading: '03. Macro Creation',
+        items: [
+          'Introduction to macros',
+          'Create symbol macros',
+          'Create device macros',
+          'Macro properties & assignment',
+          'Manage macros in projects',
+          'Reuse & improve efficiency',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: '04. Page Macro (Template)',
+        items: [
+          'Create page macro / template',
+          'Title block & frame configuration',
+          'Placeholder & attribute handling',
+          'Auto numbering & settings',
+          'Reuse templates in projects',
+          'Time saving techniques',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: '05. Window Macro Creation',
+        items: [
+          'Create window macros',
+          'Define window structure',
+          'Insert symbols, devices & texts',
+          'Attribute mapping in window macros',
+          'Reuse in multiple projects',
+          'Improve productivity & consistency',
+          'Practical exercises'
+        ]
+      },
+      {
+        heading: 'Application Based Design',
+        items: [
+          'Single Line Single Drawing for Motor Application',
+          'Single Line Single Drawing for Pump Application',
+          'Any Industrial Application'
+        ]
       }
     ],
-    outcomes: ['AutoCAD Electrical Draftsman', 'Control Panel Layout Draftsman']
+    outcomes: [
+      'Industry standard software skills',
+      'Practical knowledge with real-world projects',
+      'Time saving techniques using macros & templates',
+      'Better productivity & career growth',
+      'Certificate of Completion'
+    ]
   },
   'autocad-mechanical': {
     title: 'AutoCAD Mechanical 2D 2026 Drafting',
