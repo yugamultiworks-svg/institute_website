@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll();
   initHeroSlider();
   initMobileMenu();
+  // Prevent tel: telephone links from opening on desktop view (> 992px)
+  document.addEventListener('click', (e) => {
+    const telLink = e.target.closest('a[href^="tel:"]');
+    if (telLink && window.innerWidth > 992) {
+      e.preventDefault();
+      showToast('Call functionality is available on mobile and tablet devices.');
+    }
+  });
 });
 
 /* --------------------------------------------------------------------------
@@ -50,7 +58,7 @@ function initThemeToggle() {
 function initNavbarScroll() {
   const navbar = document.getElementById('navbar');
   const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section');
+  const sections = document.querySelectorAll('section[id]');
 
   window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
@@ -59,21 +67,26 @@ function initNavbarScroll() {
       navbar.classList.remove('scrolled');
     }
 
-    // ScrollSpy active link detection
-    let current = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120;
-      if (window.scrollY >= sectionTop) {
-        current = section.getAttribute('id');
-      }
-    });
+    // ScrollSpy active link detection (only on pages with multiple main sections)
+    if (sections.length > 2) {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
 
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) {
-        link.classList.add('active');
+      if (current) {
+        navLinks.forEach(link => {
+          const href = link.getAttribute('href') || '';
+          if (href === `#${current}` || href === `./index.html#${current}`) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          }
+        });
       }
-    });
+    }
   });
 }
 
@@ -166,107 +179,117 @@ function filterCourses(category) {
    SYLLABUS DATA & MODAL RENDERER
    -------------------------------------------------------------------------- */
 const syllabusData = {
-  'electrical-master': {
-    title: 'Electrical Design Engineering Master Course',
-    subtitle: 'ePLAN P8 2026 2D + EPLAN Pro Panel 3D + AutoCAD Electrical 2026 2D',
-    duration: '3 Months (Classroom / Online)',
-    prerequisites: 'Diploma / BE / B.Tech in EEE / ECE / E&I or Industry Practitioners',
-    modules: [
-      {
-        heading: 'Module 1: Electrical Fundamentals & Motor Control Circuits',
-        items: ['Understanding Single & 3-Phase Power Distribution', 'DOL (Direct On Line) Starter Design & Interlocks', 'Star-Delta Starter Schematics & Timer Configuration', 'Forward-Reverse Control Circuit Engineering', 'Overload Relays (OLR), Contactors & Protection Devices']
-      },
-      {
-        heading: 'Module 2: ePLAN Electric P8 2026 2D Design',
-        items: ['Creating Multi-line & Single-line Electrical Schematics', 'Automatic Cross-referencing of Relays & Contactors', 'PLC I/O Schematic Generation & Signal Tracking', 'Terminal Diagram & Cable Overview Report Generation', 'Bill of Materials (BOM) & Parts Database Management']
-      },
-      {
-        heading: 'Module 3: EPLAN Pro Panel 3D 2026 Enclosure Layout',
-        items: ['3D Control Panel Layout & Enclosure Selection', 'DIN Rail & Cable Duct Mounting & 3D Component Placement', '3D Wire Routing & Length Calculation', 'Drill Hole & Cable Gland Plate Engineering', 'Exporting Production Drawings & Thermal Calculation']
-      },
-      {
-        heading: 'Module 4: AutoCAD 2026 2D Electrical Drafting',
-        items: ['Ladder Diagrams & Schematic Symbols Library', '2D Panel Elevation Layouts & Dimensioning', 'Single Line Diagrams (SLD) for Industrial Plants']
-      }
-    ],
-    outcomes: ['Electrical Control Panel Designer', 'ePLAN Specialist Engineer', 'Electrical CAD Draftsman', 'Automation Design Engineer']
-  },
-  'mechanical-master': {
-    title: 'Mechanical Design Engineering Master Course',
-    subtitle: 'SOLIDWORKS 3D + DS CATIA + PTC CREO Parametric',
-    duration: '3 Months (Classroom / Online)',
-    prerequisites: 'Diploma / BE / B.Tech in Mechanical / Automobile / Production',
-    modules: [
-      {
-        heading: 'Module 1: 3D Parametric Part & Assembly Design',
-        items: ['2D Sketching, Constraints & Dimensional Feature Modeling', 'Complex 3D Part Design (Shafts, Gears, Housings, Fasteners)', 'Bottom-Up & Top-Down Assembly Techniques', 'Interference Check & Explosion Animation View']
-      },
-      {
-        heading: 'Module 2: Advanced Surface Design & Sheet Metal',
-        items: ['Class-A Surface Modeling (CATIA Generative Shape Design)', 'Freeform Curves, Lofted Surfaces & Trimming', 'Sheet Metal Bends, Flanges, Punching & Unfolded Pattern', 'Tools, Jigs & Fixtures Design']
-      },
-      {
-        heading: 'Module 3: Engineering Drawings & Motion Simulation',
-        items: ['GD&T (Geometric Dimensioning & Tolerancing)', 'Bill of Materials (BOM) & Production Ballooning', 'Mechanism Kinematics & Stress Analysis (FEA Preview)']
-      }
-    ],
-    outcomes: ['3D Mechanical Design Engineer', 'CAD Modeling Specialist', 'Automotive Surface Designer', 'Tooling & Fixture Designer']
-  },
-  'eplan-specialist': {
-    title: 'ePLAN Electric P8 & 3D Pro Panel Specialist',
-    subtitle: 'Advanced Control Cabinet & Schematics Engineering',
-    duration: '6 Weeks (Classroom / Online)',
+  'eplan-2d': {
+    title: 'Eplan P8 2026 (2D Electrical Schematics)',
+    subtitle: 'Industrial Schematic Engineering & Auto-Documentation',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
     prerequisites: 'Basic Electrical Knowledge',
     modules: [
       {
-        heading: 'ePLAN P8 2026 Core Schematic Features',
-        items: ['Macro Creation & PLC Schema Integration', 'Automatic Terminal & Cable Diagrams', 'PLC I/O Address Management & Import/Export']
-      },
-      {
-        heading: 'EPLAN Pro Panel 3D Layout',
-        items: ['Virtual 3D Cabinet Construction', '3D Routing & Collision Check', 'Production NC Machine Export Data']
+        heading: 'Eplan P8 2026 Core Schematic Curriculum',
+        items: ['Multi-line & Single-line Circuit Schematics', 'Automatic Contact Cross-referencing & PLC Schema', 'Cable Overview Reports, Terminal Diagrams & BOM Export']
       }
     ],
-    outcomes: ['EPLAN Electrical Specialist', 'Control Panel Panel Builder']
+    outcomes: ['ePLAN Electrical Engineer', 'Schematics Design Engineer']
+  },
+  'eplan-3d': {
+    title: 'Eplan P8 3D 2026 (EPLAN Pro Panel 3D)',
+    subtitle: '3D Control Cabinet Construction & Wire Routing',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
+    prerequisites: 'Basic Electrical CAD Awareness',
+    modules: [
+      {
+        heading: 'EPLAN Pro Panel 3D Cabinet Design',
+        items: ['3D Cabinet Placement & Component Mounting', 'Virtual 3D Wire Routing & Length Calculation', 'Collision Checks & Drill Hole Export for NC Machines']
+      }
+    ],
+    outcomes: ['3D Panel Builder Engineer', 'Cabinet Layout Specialist']
   },
   'autocad-electrical': {
-    title: 'AutoCAD Electrical 2026 Drafting Course',
-    subtitle: '2D Schematic & Panel Elevation Drafting',
-    duration: '1 Month',
+    title: 'AutoCAD Electrical 2D 2026 Drafting',
+    subtitle: 'Industrial 2D Electrical Schematic & Panel Elevation',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
     prerequisites: 'Basic Computer & Electrical Drafting Awareness',
     modules: [
       {
-        heading: 'AutoCAD Electrical Toolset Training',
-        items: ['Project Architecture & Schematic Drawing Setup', 'Wire Numbers & Signal Arrow Tagging', 'PLC Module Schematic Generation', '2D Panel Layout Footprints']
+        heading: 'AutoCAD Electrical 2D 2026 Toolset',
+        items: ['Project Architecture & Schematic Drawing Setup', 'Wire Numbers & Signal Arrow Tagging', 'PLC Module Schematic Generation & 2D Panel Layout Footprints']
       }
     ],
-    outcomes: ['AutoCAD Electrical Draftsman', 'Panel Layout Specialist']
+    outcomes: ['AutoCAD Electrical Draftsman', 'Control Panel Layout Draftsman']
   },
-  'solidworks-specialist': {
-    title: 'SOLIDWORKS 3D Design & Assembly',
-    subtitle: 'Parametric Part & Machine Modeling',
-    duration: '6 Weeks',
+  'autocad-mechanical': {
+    title: 'AutoCAD Mechanical 2D 2026 Drafting',
+    subtitle: 'Precision Mechanical Drafting & Standard Machine Components',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
+    prerequisites: 'Basic Engineering Drawing Awareness',
+    modules: [
+      {
+        heading: 'AutoCAD Mechanical 2D 2026 Curriculum',
+        items: ['Mechanical Drafting Tools & Layer Management', 'Standard Machinery Parts Library (Screws, Gears, Bearings)', 'Dimensioning, Limits, Fits & Surface Finish Symbols']
+      }
+    ],
+    outcomes: ['AutoCAD Mechanical Draftsman', 'Mechanical Detailer']
+  },
+  'creo-3d': {
+    title: 'Creo 3D (PTC Creo Parametric 3D)',
+    subtitle: 'Parametric Part, Assembly & Surface Modeling',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
+    prerequisites: 'Basic Mechanical Design Background',
+    modules: [
+      {
+        heading: 'PTC Creo 3D Modules',
+        items: ['Parametric Feature Tree & Relations', 'Complex Part Design & Machine Assemblies', 'Exploded Animation & Production Drawing Views']
+      }
+    ],
+    outcomes: ['Creo Design Engineer', 'Parametric CAD Modeler']
+  },
+  'catia-3d': {
+    title: 'Catia 3D (DS CATIA 3D & Surface Design)',
+    subtitle: 'Automotive Body Component & Class-A Surface Modeling',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
+    prerequisites: 'Basic 3D CAD Knowledge',
+    modules: [
+      {
+        heading: 'DS CATIA V5/V6 Design Suite',
+        items: ['Part Design & Generative Shape Design (Surface)', 'Automotive Body Component Modeling', 'Kinematic Mechanism Simulation']
+      }
+    ],
+    outcomes: ['CATIA Surface Modeler', 'Automotive Design Engineer']
+  },
+  'solidworks-3d': {
+    title: 'SolidWorks 3D Design & Assembly',
+    subtitle: 'Parametric 3D Machine & Sheet Metal Modeling',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
     prerequisites: 'Mechanical Engineering Background',
     modules: [
       {
-        heading: 'SolidWorks Modules',
-        items: ['Part Modeling & Extrusions/Revolves', 'Assembly Constraints & Mates', 'Production Drawing Views & GD&T', 'Sheet Metal & Weldments']
+        heading: 'SolidWorks 3D Modules',
+        items: ['Part Modeling, Extrusions & Revolves', 'Assembly Mates & Constraints', 'Production Drawings, Sheet Metal & Weldments']
       }
     ],
     outcomes: ['SolidWorks CAD Modeler', 'Product Design Engineer']
   },
-  'catia-creo-specialist': {
-    title: 'CATIA & CREO Parametric 3D Specialist',
-    subtitle: 'Surface, Automotive & Complex Machine Design',
-    duration: '2 Months',
-    prerequisites: 'Basic 3D CAD Knowledge',
+  'inventor-3d': {
+    title: 'Inventor 3D (Autodesk Inventor 3D)',
+    subtitle: '3D Mechanical Machine & Tooling Design',
+    duration: '1 Month (Online / Offline)',
+    schedule: 'Online: Weekdays 7:00 PM - 8:00 PM (Flexible) | Offline: Sat & Sun (Flexible)',
+    prerequisites: 'Basic Mechanical Drafting Background',
     modules: [
       {
-        heading: 'CATIA & CREO Design Suite',
-        items: ['Part Design & Generative Shape Design (Surface)', 'Parametric Feature Tree & Relations in CREO', 'Automotive Body Component Design', 'Mechanism Kinematics & Simulation']
+        heading: 'Autodesk Inventor 3D Curriculum',
+        items: ['Parametric 3D Part & Assembly Modeling', 'Frame Generator & Sheet Metal Design', 'Stress Analysis & Presentation Animations']
       }
     ],
-    outcomes: ['CATIA Surface Modeler', 'CREO Design Engineer']
+    outcomes: ['Autodesk Inventor Specialist', 'Machine Design Engineer']
   }
 };
 
@@ -275,7 +298,7 @@ function openSyllabusModal(courseKey) {
   if (!data) return;
 
   const contentDiv = document.getElementById('syllabusContent');
-  
+
   let modulesHTML = '';
   data.modules.forEach(mod => {
     let itemsHTML = mod.items.map(item => `<li><i class="fa-solid fa-check-double text-gradient-green" style="margin-right: 8px;"></i>${item}</li>`).join('');
@@ -296,9 +319,9 @@ function openSyllabusModal(courseKey) {
     <h3 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; margin-bottom: 0.4rem;" class="text-gradient-green">${data.title}</h3>
     <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">${data.subtitle}</p>
 
-    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-main); background: rgba(255,255,255,0.04); padding: 0.8rem 1rem; border-radius: var(--radius-sm);">
-      <div><i class="fa-regular fa-clock" style="color: var(--accent-gold);"></i> <strong>Duration:</strong> ${data.duration}</div>
-      <div><i class="fa-solid fa-user-graduate" style="color: var(--primary);"></i> <strong>Eligibility:</strong> ${data.prerequisites}</div>
+    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-main); background: rgba(255,255,255,0.04); padding: 0.8rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <div><i class="fa-regular fa-clock" style="color: var(--accent-gold); margin-right: 6px;"></i> <strong>Duration:</strong> ${data.duration}</div>
+      <div><i class="fa-solid fa-calendar-check" style="color: var(--primary); margin-right: 6px;"></i> <strong>Batch Timings:</strong> ${data.schedule}</div>
     </div>
 
     <h4 style="font-family: var(--font-heading); font-size: 1.1rem; margin-bottom: 0.75rem;">Course Modules & Hands-on Training:</h4>
