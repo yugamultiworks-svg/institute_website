@@ -17,14 +17,14 @@ function initThemeToggle() {
   if (!toggleBtn) return;
 
   const icon = toggleBtn.querySelector('i');
-  const savedTheme = localStorage.getItem('wegrow_theme') || 'dark';
+  const savedTheme = localStorage.getItem('wegrow_theme') || 'light';
 
-  if (savedTheme === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-    if (icon) icon.className = 'fa-solid fa-sun';
-  } else {
+  if (savedTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
     if (icon) icon.className = 'fa-solid fa-moon';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    if (icon) icon.className = 'fa-solid fa-sun';
   }
 
   toggleBtn.addEventListener('click', () => {
@@ -99,24 +99,33 @@ function initHeroSlider() {
 function initMobileMenu() {
   const toggleBtn = document.getElementById('menuToggle');
   const navLinks = document.querySelector('.nav-links');
+  if (!toggleBtn || !navLinks) return;
 
-  if (toggleBtn && navLinks) {
-    toggleBtn.addEventListener('click', () => {
-      if (navLinks.style.display === 'flex') {
-        navLinks.style.display = 'none';
-      } else {
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '100%';
-        navLinks.style.left = '0';
-        navLinks.style.width = '100%';
-        navLinks.style.background = '#090d16';
-        navLinks.style.padding = '1.5rem';
-        navLinks.style.borderBottom = '1px solid var(--border-color)';
-      }
+  const icon = toggleBtn.querySelector('i');
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isActive = navLinks.classList.toggle('mobile-active');
+    if (icon) {
+      icon.className = isActive ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+    }
+  });
+
+  // Automatically close mobile menu when a navigation item is clicked
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('mobile-active');
+      if (icon) icon.className = 'fa-solid fa-bars';
     });
-  }
+  });
+
+  // Close menu when clicking anywhere outside
+  document.addEventListener('click', (e) => {
+    if (!toggleBtn.contains(e.target) && !navLinks.contains(e.target)) {
+      navLinks.classList.remove('mobile-active');
+      if (icon) icon.className = 'fa-solid fa-bars';
+    }
+  });
 }
 
 /* --------------------------------------------------------------------------

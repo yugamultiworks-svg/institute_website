@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
     <div class="container nav-container">
       <a href="#home" class="logo">
         <div class="logo-icon">
-          <i class="fa-solid => fa-seedling"></i>
+          <i class="fa-solid fa-seedling"></i>
         </div>
         <div>
           <span>WE GROW</span>
@@ -34,18 +34,14 @@
       </ul>
 
       <div class="nav-actions">
-        <a href="tel:+917708282147" class="nav-phone">
-          <i class="fa-solid fa-phone"></i>
-          <span>+91 7708282147</span>
-        </a>
         <button class="btn btn-primary" onclick="openEnrollModal('General Inquiry')">
           <i class="fa-solid fa-graduation-cap"></i> Enroll Now
         </button>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Theme">
+          <i class="fa-solid fa-sun"></i>
+        </button>
         <button class="menu-toggle" id="menuToggle">
           <i class="fa-solid fa-bars"></i>
-        </button>
-        <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Theme">
-          <i class="fa-solid fa-moon"></i>
         </button>
       </div>
     </div>
@@ -123,7 +119,7 @@
         <div class="hero-badge-float">
           <i class="fa-solid fa-certificate"></i>
           <div>
-            <div style="font-weight: 700; font-size: 0.95rem;">Govt. & Industry Recognized</div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">Govt. & Industry Recognized</div>
             <div style="font-size: 0.78rem; color: var(--text-muted);">Certificate of Completion</div>
           </div>
         </div>
