@@ -583,79 +583,95 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 /* --------------------------------------------------------------------------
-   CONTACT & ENROLLMENT FORM SUBMISSION HANDLERS (FORMSPREE INTEGRATION)
+   CONTACT & ENROLLMENT FORM SUBMISSION HANDLERS (MANUAL EMAIL DISPATCH)
    -------------------------------------------------------------------------- */
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xdekgkep';
+const INSTITUTE_EMAIL = 'yuga.multi.works@gmail.com';
 
-async function handleFormSubmit(event) {
+/**
+ * Manually formats and dispatches form data to institute email via mailto link trigger.
+ */
+function sendFormEmail(formData, formTitle) {
+  const name = formData.get('name') || 'N/A';
+  const phone = formData.get('phone') || 'N/A';
+  const course = formData.get('course') || 'General Inquiry';
+  const mode = formData.get('mode') || '';
+  const message = formData.get('message') || '';
+
+  const subject = `[WE GROW Inquiry] ${formTitle} - ${name} (${course})`;
+  
+  let bodyText = `WE GROW ACADEMY - NEW ${formTitle.toUpperCase()}\n`;
+  bodyText += `========================================\n\n`;
+  bodyText += `Full Name: ${name}\n`;
+  bodyText += `Phone / WhatsApp: ${phone}\n`;
+  bodyText += `Selected Course: ${course}\n`;
+  if (mode) {
+    bodyText += `Preferred Mode: ${mode}\n`;
+  }
+  if (message) {
+    bodyText += `Message / Inquiry: ${message}\n`;
+  }
+  bodyText += `\nSubmitted On: ${new Date().toLocaleString()}\n`;
+
+  const mailtoUrl = `mailto:${INSTITUTE_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+  
+  // Trigger mailto link to launch default mail app with prefilled email
+  window.location.href = mailtoUrl;
+}
+
+function handleFormSubmit(event) {
   event.preventDefault();
   const form = event.target;
   const submitBtn = document.getElementById('contactSubmitBtn');
-  const originalBtnText = submitBtn.innerHTML;
+  const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
 
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing Email...';
+  }
 
   try {
     const formData = new FormData(form);
-    const response = await fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-
-    if (response.ok) {
-      showToast('Thank you! Your course inquiry has been sent to WE GROW Academy.');
-      form.reset();
-    } else {
-      const data = await response.json();
-      if (data && data.errors) {
-        showToast('Error: ' + data.errors.map(err => err.message).join(', '));
-      } else {
-        showToast('Oops! There was a problem submitting your inquiry.');
-      }
-    }
+    sendFormEmail(formData, 'Course Inquiry');
+    showToast('Inquiry prepared! Opening your email client to send to WE GROW Academy.');
+    form.reset();
   } catch (error) {
-    showToast('Network error! Please check your connection or call +91 7708282147.');
+    showToast('Error preparing email. Please call +91 7708282147.');
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = originalBtnText;
+    if (submitBtn) {
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }, 1500);
+    }
   }
 }
 
-async function handleModalEnrollSubmit(event) {
+function handleModalEnrollSubmit(event) {
   event.preventDefault();
   const form = event.target;
   const submitBtn = document.getElementById('modalSubmitBtn');
-  const originalBtnText = submitBtn.innerHTML;
+  const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
 
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Reserving Seat...';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing Email...';
+  }
 
   try {
     const formData = new FormData(form);
-    const response = await fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-
-    if (response.ok) {
-      closeModal('enrollModal');
-      showToast('Seat Reservation Application Submitted Successfully!');
-      form.reset();
-    } else {
-      showToast('Oops! Problem submitting seat reservation.');
-    }
+    sendFormEmail(formData, 'Seat Reservation');
+    closeModal('enrollModal');
+    showToast('Seat reservation prepared! Opening your email client to send inquiry.');
+    form.reset();
   } catch (error) {
-    showToast('Network error! Please check your connection or call +91 7708282147.');
+    showToast('Error preparing reservation. Please call +91 7708282147.');
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = originalBtnText;
+    if (submitBtn) {
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }, 1500);
+    }
   }
 }
 
