@@ -583,42 +583,75 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 /* --------------------------------------------------------------------------
-   CONTACT & ENROLLMENT FORM SUBMISSION HANDLERS (MANUAL EMAIL DISPATCH)
+   NODE.JS BACKEND EMAIL DISPATCH HANDLER (EXPRESS & NODEMAILER)
    -------------------------------------------------------------------------- */
-const INSTITUTE_EMAIL = 'yuga.multi.works@gmail.com';
+const NODE_SERVER_URL = window.location.origin.startsWith('http') 
+  ? '/api/send-email' 
+  : 'http://localhost:5000/api/send-email';
 
-/**
- * Manually formats and dispatches form data to institute email via mailto link trigger.
- */
-function sendFormEmail(formData, formTitle) {
-  const name = formData.get('name') || 'N/A';
-  const phone = formData.get('phone') || 'N/A';
-  const course = formData.get('course') || 'General Inquiry';
-  const mode = formData.get('mode') || '';
-  const message = formData.get('message') || '';
+async function sendDirectEmail(formElement, formTitle) {
+  const formData = new FormData(formElement);
+  const payload = {
+    name: formData.get('name') || 'N/A',
+    phone: formData.get('phone') || 'N/A',
+    email: formData.get('email') || '',
+    course: formData.get('course') || 'General Inquiry',
+    mode: formData.get('mode') || '',
+    message: formData.get('message') || '',
+    formTitle: formTitle || 'Course Inquiry'
+  };
 
-  const subject = `[WE GROW Inquiry] ${formTitle} - ${name} (${course})`;
-  
-  let bodyText = `WE GROW ACADEMY - NEW ${formTitle.toUpperCase()}\n`;
-  bodyText += `========================================\n\n`;
-  bodyText += `Full Name: ${name}\n`;
-  bodyText += `Phone / WhatsApp: ${phone}\n`;
-  bodyText += `Selected Course: ${course}\n`;
-  if (mode) {
-    bodyText += `Preferred Mode: ${mode}\n`;
+  let lastError = 'Failed to connect to Node.js backend server.';
+
+  // Attempt 1: Node.js Express Backend API Endpoint
+  try {
+    const response = await fetch(NODE_SERVER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      return { success: true, message: data.message };
+    } else {
+      lastError = data.error || data.message || 'Server error';
+      console.warn('Node.js Backend Response Warning:', data);
+    }
+  } catch (err) {
+    console.warn('Node.js Backend Fetch Error:', err);
+    lastError = err.message || 'Network error connecting to Node.js backend';
   }
-  if (message) {
-    bodyText += `Message / Inquiry: ${message}\n`;
-  }
-  bodyText += `\nSubmitted On: ${new Date().toLocaleString()}\n`;
 
-  const mailtoUrl = `mailto:${INSTITUTE_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
-  
-  // Trigger mailto link to launch default mail app with prefilled email
-  window.location.href = mailtoUrl;
+  // Attempt 2: Direct Localhost Endpoint (if site accessed via file:// protocol)
+  if (NODE_SERVER_URL !== 'http://localhost:5000/api/send-email') {
+    try {
+      const resFallback = await fetch('http://localhost:5000/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      const dataFallback = await resFallback.json();
+      if (resFallback.ok && dataFallback.success) {
+        return { success: true, message: dataFallback.message };
+      } else {
+        lastError = dataFallback.error || 'Server error';
+      }
+    } catch (e) {
+      console.warn('Localhost fallback notice:', e);
+    }
+  }
+
+  return { success: false, error: lastError };
 }
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
   event.preventDefault();
   const form = event.target;
   const submitBtn = document.getElementById('contactSubmitBtn');
@@ -626,27 +659,29 @@ function handleFormSubmit(event) {
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing Email...';
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending Email...';
   }
 
   try {
-    const formData = new FormData(form);
-    sendFormEmail(formData, 'Course Inquiry');
-    showToast('Inquiry prepared! Opening your email client to send to WE GROW Academy.');
-    form.reset();
+    const result = await sendDirectEmail(form, 'Course Inquiry');
+    if (result.success) {
+      showToast('Success! Custom inquiry email sent to WE GROW Academy.');
+      form.reset();
+    } else {
+      showToast('Email Error: ' + result.error);
+    }
   } catch (error) {
-    showToast('Error preparing email. Please call +91 7708282147.');
+    console.error('Email dispatch error:', error);
+    showToast('Failed to send email. Please check Node.js server connection.');
   } finally {
     if (submitBtn) {
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
-      }, 1500);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
     }
   }
 }
 
-function handleModalEnrollSubmit(event) {
+async function handleModalEnrollSubmit(event) {
   event.preventDefault();
   const form = event.target;
   const submitBtn = document.getElementById('modalSubmitBtn');
@@ -654,23 +689,25 @@ function handleModalEnrollSubmit(event) {
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing Email...';
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Confirming Seat Reservation...';
   }
 
   try {
-    const formData = new FormData(form);
-    sendFormEmail(formData, 'Seat Reservation');
-    closeModal('enrollModal');
-    showToast('Seat reservation prepared! Opening your email client to send inquiry.');
-    form.reset();
+    const result = await sendDirectEmail(form, 'Seat Reservation');
+    if (result.success) {
+      closeModal('enrollModal');
+      showToast('Success! Custom seat reservation email sent to WE GROW Academy.');
+      form.reset();
+    } else {
+      showToast('Reservation Error: ' + result.error);
+    }
   } catch (error) {
-    showToast('Error preparing reservation. Please call +91 7708282147.');
+    console.error('Email dispatch error:', error);
+    showToast('Failed to send email. Please check Node.js server connection.');
   } finally {
     if (submitBtn) {
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
-      }, 1500);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
     }
   }
 }
