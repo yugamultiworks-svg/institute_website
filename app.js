@@ -595,7 +595,7 @@ async function sendDirectEmail(formElement, formTitle) {
     name: formData.get('name') || 'N/A',
     phone: formData.get('phone') || 'N/A',
     email: formData.get('email') || '',
-    qualification: formData.get('qualification') || 'N/A',
+    qualification: formData.get('qualification') || (formElement.querySelector('[name="qualification"]')?.value) || 'N/A',
     course: formData.get('course') || 'General Inquiry',
     mode: formData.get('mode') || '',
     message: formData.get('message') || '',
