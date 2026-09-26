@@ -8,7 +8,7 @@ const INSTITUTE_EMAIL = process.env.INSTITUTE_EMAIL || 'yuga.multi.works@gmail.c
 const SMTP_USER = process.env.SMTP_USER || 'yuga.multi.works@gmail.com';
 const SMTP_PASS = process.env.SMTP_PASS || 'czva lvml gepn nasd';
 
-function buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, time }) {
+function buildHtmlEmail({ name, phone, email, qualification, course, mode, message, formTitle, time }) {
   return `
     <!DOCTYPE html>
     <html>
@@ -41,6 +41,7 @@ function buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, 
             <tr><td class="lbl">Student Name:</td><td class="val">${name}</td></tr>
             <tr><td class="lbl">Phone Number:</td><td class="val"><a href="tel:${phone}" style="color: #059669; font-weight: bold; text-decoration: none;">${phone}</a></td></tr>
             <tr><td class="lbl">Email Address:</td><td class="val">${email}</td></tr>
+            <tr><td class="lbl">Qualification:</td><td class="val" style="font-weight: 600; color: #0f172a;">${qualification || 'N/A'}</td></tr>
             <tr><td class="lbl">Selected Course:</td><td class="val highlight">${course}</td></tr>
             <tr><td class="lbl">Training Mode:</td><td class="val">${mode}</td></tr>
             <tr><td class="lbl">Message / Query:</td><td class="val">${message}</td></tr>
@@ -73,7 +74,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { name, phone, email = 'N/A', course = 'General Inquiry', mode = 'N/A', message = 'N/A', formTitle = 'Course Inquiry' } = req.body || {};
+    const { name, phone, email = 'N/A', qualification = 'N/A', course = 'General Inquiry', mode = 'N/A', message = 'N/A', formTitle = 'Course Inquiry' } = req.body || {};
 
     if (!name || !phone) {
       return res.status(400).json({ success: false, error: 'Name and Phone Number are required.' });
@@ -97,7 +98,7 @@ module.exports = async function handler(req, res) {
       }
     });
 
-    const htmlContent = buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, time });
+    const htmlContent = buildHtmlEmail({ name, phone, email, qualification, course, mode, message, formTitle, time });
 
     const mailOptions = {
       from: `"${name} via WE GROW" <${SMTP_USER}>`,
@@ -105,7 +106,7 @@ module.exports = async function handler(req, res) {
       replyTo: (email && email !== 'N/A' && email.includes('@')) ? email : undefined,
       subject: `[WE GROW] New ${formTitle}: ${course} - ${name}`,
       html: htmlContent,
-      text: `[WE GROW] ${formTitle}\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nCourse: ${course}\nMode: ${mode}\nMessage: ${message}\nTime: ${time}`
+      text: `[WE GROW] ${formTitle}\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nQualification: ${qualification}\nCourse: ${course}\nMode: ${mode}\nMessage: ${message}\nTime: ${time}`
     };
 
     const info = await transporter.sendMail(mailOptions);
