@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname)));
 /**
  * Constructs custom HTML email content created programmatically in Node.js
  */
-function buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, time }) {
+function buildHtmlEmail({ name, phone, email, qualification, course, mode, message, formTitle, time }) {
   return `
     <!DOCTYPE html>
     <html>
@@ -56,6 +56,7 @@ function buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, 
             <tr><td class="lbl">Student Name:</td><td class="val">${name}</td></tr>
             <tr><td class="lbl">Phone Number:</td><td class="val"><a href="tel:${phone}" style="color: #059669; font-weight: bold; text-decoration: none;">${phone}</a></td></tr>
             <tr><td class="lbl">Email Address:</td><td class="val">${email}</td></tr>
+            <tr><td class="lbl">Qualification:</td><td class="val" style="font-weight: 600; color: #0f172a;">${qualification || 'N/A'}</td></tr>
             <tr><td class="lbl">Selected Course:</td><td class="val highlight">${course}</td></tr>
             <tr><td class="lbl">Training Mode:</td><td class="val">${mode}</td></tr>
             <tr><td class="lbl">Message / Query:</td><td class="val">${message}</td></tr>
@@ -75,7 +76,7 @@ function buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, 
 /**
  * Sends email via Nodemailer SMTP (Gmail / Custom SMTP)
  */
-async function sendNodemailerEmail({ name, phone, email, course, mode, message, formTitle, time }) {
+async function sendNodemailerEmail({ name, phone, email, qualification, course, mode, message, formTitle, time }) {
   const smtpUser = process.env.SMTP_USER || INSTITUTE_EMAIL;
   const smtpPass = process.env.SMTP_PASS || 'czva lvml gepn nasd';
 
@@ -94,7 +95,7 @@ async function sendNodemailerEmail({ name, phone, email, course, mode, message, 
     }
   });
 
-  const htmlContent = buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, time });
+  const htmlContent = buildHtmlEmail({ name, phone, email, qualification, course, mode, message, formTitle, time });
   const subject = `[WE GROW] New ${formTitle}: ${course} - ${name}`;
 
   const mailOptions = {
@@ -103,7 +104,7 @@ async function sendNodemailerEmail({ name, phone, email, course, mode, message, 
     replyTo: (email && email !== 'N/A' && email.includes('@')) ? email : undefined,
     subject: subject,
     html: htmlContent,
-    text: `[WE GROW] ${formTitle}\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nCourse: ${course}\nMode: ${mode}\nMessage: ${message}\nTime: ${time}`
+    text: `[WE GROW] ${formTitle}\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nQualification: ${qualification}\nCourse: ${course}\nMode: ${mode}\nMessage: ${message}\nTime: ${time}`
   };
 
   const info = await transporter.sendMail(mailOptions);
@@ -113,7 +114,7 @@ async function sendNodemailerEmail({ name, phone, email, course, mode, message, 
 
 app.post('/api/send-email', async (req, res) => {
   try {
-    const { name, phone, email, course, mode, message, formTitle } = req.body;
+    const { name, phone, email, qualification, course, mode, message, formTitle } = req.body;
 
     if (!name || !phone) {
       return res.status(400).json({
