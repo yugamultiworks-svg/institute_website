@@ -1,3 +1,7 @@
+const dns = require('dns');
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
@@ -73,24 +77,18 @@ function buildHtmlEmail({ name, phone, email, course, mode, message, formTitle, 
  */
 async function sendNodemailerEmail({ name, phone, email, course, mode, message, formTitle, time }) {
   const smtpUser = process.env.SMTP_USER || INSTITUTE_EMAIL;
-  const smtpPass = process.env.SMTP_PASS;
-
-  if (!smtpPass || smtpPass === 'czva lvml gepn nasd') {
-    throw new Error('SMTP_PASS is not set in .env file. Please add your 16-character Gmail App Password to .env file to send emails.');
-  }
-
-  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = parseInt(process.env.SMTP_PORT || '587', 10);
-  const secure = process.env.SMTP_SECURE === 'true';
+  const smtpPass = process.env.SMTP_PASS || 'czva lvml gepn nasd';
 
   const transporter = nodemailer.createTransport({
-    host: host,
-    port: port,
-    secure: secure, // false for 587, true for 465
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: smtpUser,
       pass: smtpPass
     },
+    family: 4, // Force IPv4 to prevent IPv6 ETIMEDOUT (2404:6800:4000:1025::6c) on Vercel
     tls: {
       rejectUnauthorized: false
     }
