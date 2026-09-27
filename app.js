@@ -666,7 +666,7 @@ async function handleFormSubmit(event) {
   try {
     const result = await sendDirectEmail(form, 'Course Inquiry');
     if (result.success) {
-      showToast('Success! Custom inquiry email sent to WE GROW Academy.');
+      showToast('Submitted successfully! We’ll contact you shortly.');
       form.reset();
     } else {
       showToast('Email Error: ' + result.error);
@@ -697,7 +697,7 @@ async function handleModalEnrollSubmit(event) {
     const result = await sendDirectEmail(form, 'Seat Reservation');
     if (result.success) {
       closeModal('enrollModal');
-      showToast('Success! Custom seat reservation email sent to WE GROW Academy.');
+      showToast('Submitted successfully! We’ll contact you shortly.');
       form.reset();
     } else {
       showToast('Reservation Error: ' + result.error);
