@@ -114,7 +114,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: 'Reservation submitted successfully! Our team will call you back shortly.',
+      message: 'Submitted successfully! We’ll contact you shortly.',
       messageId: info.messageId
     });
   } catch (error) {
