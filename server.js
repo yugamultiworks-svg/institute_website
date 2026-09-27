@@ -149,7 +149,7 @@ app.post('/api/send-email', async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Custom HTML email dispatched successfully to ${INSTITUTE_EMAIL}`,
+      message: 'Submitted successfully! We’ll contact you shortly.',
       messageId: result.messageId
     });
 
